@@ -6,6 +6,8 @@ import bb.cascades 1.0
 // creates one page with a label
 Page {
     Container {
+        id: root
+        
         layout: DockLayout {
         }
 

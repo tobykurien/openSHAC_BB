@@ -14,10 +14,10 @@ using namespace bb::cascades;
 
 Q_DECL_EXPORT int main(int argc, char **argv)
 {
+    qmlRegisterType<shac::config::Configurator>("shac.config", 1, 0, "Configurator");
+
     // this is where the server is started etc
     Application app(argc, argv);
-
-    qmlRegisterType<shac::config::Configurator>("shac.config", 1, 0, "Configurator");
 
     // localization support
     QTranslator translator;

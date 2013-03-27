@@ -3,7 +3,6 @@ import bb.cascades 1.0
 import bb.system 1.0
 import shac.config 1.0
 
-// OAUth URL: https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/userinfo.email&response_type=code&redirect_uri=http://localhost:8080&client_id=231571905235.apps.googleusercontent.com
 NavigationPane {
     id: navigationPane
     // creates one page with a label
@@ -16,22 +15,18 @@ NavigationPane {
             ActionItem {
                 title: "House4Hack"
                 ActionBar.placement: ActionBarPlacement.OnBar
+                onTriggered: {
+                    routeInvoker.endAddress = "4 Burger Ave, Centurion, South Africa"
+                    routeInvoker.endDescription = "House4Hack"
+                    routeInvoker.go()
+                }
             },
             ActionItem {
                 title: "Sign In"
-                onTriggered: signIn()
-                ActionBar.placement: ActionBarPlacement.InOverflow
-            },
-            ActionItem {
-                title: "Settings"
+                onTriggered: root.signIn()
                 ActionBar.placement: ActionBarPlacement.InOverflow
             }
         ]
-
-        function signIn() {
-            var page = o_auth.createObject();
-            navigationPane.push(page);
-        }
 
         attachedObjects: [
             ComponentDefinition {
@@ -49,17 +44,31 @@ NavigationPane {
                 //inputField.inputMode: SystemUiInputMode.Password
                 onFinished: {
                     if (result == SystemUiResult.ConfirmButtonSelection) {
-                        console.log("confirm");
-                    } else if (result == SystemUiResult.CancelButtonSelection) {
-                        console.log("cancel");
+                        root.signIn();
+                    }
+                }
+            },
+            OrientationHandler {
+                onOrientationAboutToChange: {
+                    if (orientation == UIOrientation.Landscape) {
+                        buttonLayout.orientation = LayoutOrientation.LeftToRight;
+                    } else {
+                        buttonLayout.orientation = LayoutOrientation.TopToBottom;
                     }
                 }
             }
         ]
 
         Container {
+            id: root
+
             layout: StackLayout {
-                orientation: TopToBottom
+                id: buttonLayout
+            }
+
+            function signIn() {
+                var page = o_auth.createObject();
+                navigationPane.push(page);
             }
 
             ImageButton {
@@ -93,14 +102,16 @@ NavigationPane {
             WebView {
                 id: webRequester
                 maxHeight: 200
+                visible: false
                 verticalAlignment: VerticalAlignment.Bottom
                 horizontalAlignment: HorizontalAlignment.Center
             }
         }
 
         onCreationCompleted: {
+            OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.All;
             config.read();
-            if (!config.accessToken) {
+            if (! config.accessToken) {
                 loginDialog.show()
             } else {
                 webRequester.settings.customHttpHeaders = {
