@@ -17,8 +17,6 @@ class ApplicationUI : public QObject
 public:
     ApplicationUI(bb::cascades::Application *app);
     virtual ~ApplicationUI() {}
-
-    void signIn();
 };
 
 

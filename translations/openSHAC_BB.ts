@@ -12,4 +12,11 @@
         <translation type="unfinished"></translation>
     </message>
 </context>
+<context>
+    <name>o_auth</name>
+    <message>
+        <source>Successfully authenticated!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>

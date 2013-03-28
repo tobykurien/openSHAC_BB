@@ -1,6 +1,7 @@
 // Main screen
 import bb.cascades 1.0
 import bb.system 1.0
+import bb.device 1.0
 import shac.config 1.0
 
 NavigationPane {
@@ -56,6 +57,9 @@ NavigationPane {
                     root.reOrient(orientation);
                 }
             },
+            HardwareInfo {
+                id: hwInfo
+            },
             ComponentDefinition {
                 id: appCover
                 source: "AppCover.qml"
@@ -103,11 +107,19 @@ NavigationPane {
                 verticalAlignment: VerticalAlignment.Bottom
                 horizontalAlignment: HorizontalAlignment.Center
                 onLoadingChanged: {
-                    if (loadRequest.status == WebLoadStatus.Succeeded) {
-                        // done loading, get the JSON
-                        toast.body = webRequester.html
-                        toast.show()
+                    if (webRequester.url != "about:blank" && loadRequest.status == WebLoadStatus.Succeeded) {
+                        webRequester.evaluateJavaScript("navigator.cascades.postMessage(document.body.innerText)")
                     }
+                }
+                onMessageReceived: {
+                    if (message.data.toString() == "Invalid User") {
+                        config.accessToken == null
+                        loginDialog.show()
+                    }
+
+                    // done loading, get the JSON
+                    toast.body = message.data
+                    toast.show()
                 }
             }
         }
@@ -119,12 +131,6 @@ NavigationPane {
 
             if (! config.accessToken) {
                 loginDialog.show()
-            } else {
-                webRequester.settings.customHttpHeaders = {
-                    "Cookie": "token=" + config.accessToken,
-                    "X-SHAC-Token": "BlackBerry",
-                    "User-Agent": "openSHAC for BlackBerry 10"
-                }
             }
         }
     }

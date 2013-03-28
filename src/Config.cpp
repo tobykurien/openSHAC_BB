@@ -98,5 +98,8 @@ namespace shac
             write();
         }
 
+        QString Configurator::md5(QString value) {
+        	return QString((QCryptographicHash::hash(value.toLocal8Bit(),QCryptographicHash::Md5).toHex()));
+        }
     }
 }

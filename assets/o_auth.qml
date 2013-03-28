@@ -64,7 +64,6 @@ Page {
                     progress.value = loadProgress
                 }
                 onMessageReceived: {
-                    console.log("Auth got json data " + message.data)
                     eval("var json = " + message.data)
                     if (json.error) {
                         toast.body = json.error

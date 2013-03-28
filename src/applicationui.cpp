@@ -20,6 +20,4 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app)
     app->setScene(root);
 }
 
-void ApplicationUI::signIn() {
-}
 

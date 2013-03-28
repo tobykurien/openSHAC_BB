@@ -37,6 +37,8 @@ namespace shac
                 Q_INVOKABLE void setPort(QString);
                 Q_INVOKABLE void resetPort();
 
+                Q_INVOKABLE QString md5(QString value);
+
             signals:
                 void accessTokenChanged();
                 void serverChanged();
