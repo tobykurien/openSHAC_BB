@@ -48,8 +48,8 @@ NavigationPane {
                 }
             },
             SystemToast {
-              id: toast
-              body: "Toast message"
+                id: toast
+                body: "Toast message"
             },
             OrientationHandler {
                 onOrientationAboutToChange: {
@@ -71,7 +71,7 @@ NavigationPane {
                 var page = o_auth.createObject();
                 navigationPane.push(page);
             }
-            
+
             function reOrient(orientation) {
                 if (orientation == UIOrientation.Landscape) {
                     buttonLayout.orientation = LayoutOrientation.LeftToRight;
@@ -80,31 +80,21 @@ NavigationPane {
                 }
             }
 
-            ImageButton {
-                id: btnDoor
-                defaultImageSource: "asset:///images/door_small_round.png"
-                pressedImageSource: "asset:///images/door_small_round_pinched.png"
-                horizontalAlignment: HorizontalAlignment.Center
-                layoutProperties: StackLayoutProperties {
-                    spaceQuota: 1
-                }
-                onClicked: {
-                    // make web request to open door
-                    webRequester.url = "http://enter.house4hack.co.za/init/android/door"
-                }
-            }
-
-            ImageButton {
+            ShacButton {
                 id: btnGate
-                defaultImageSource: "asset:///images/gate_small_round.png"
-                pressedImageSource: "asset:///images/gate_small_round_pinched.png"
-                horizontalAlignment: HorizontalAlignment.Center
-                layoutProperties: StackLayoutProperties {
-                    spaceQuota: 1
-                }
+                imageName: "gate_small_round"
                 onClicked: {
                     // make web request to open gate
                     webRequester.url = "http://enter.house4hack.co.za/init/android/gate"
+                }
+            }
+            
+            ShacButton {
+                id: btnDoor
+                imageName: "door_small_round"
+                onClicked: {
+                    // make web request to open door
+                    webRequester.url = "http://enter.house4hack.co.za/init/android/door"
                 }
             }
 
@@ -126,9 +116,8 @@ NavigationPane {
 
         onCreationCompleted: {
             OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.All;
-            root.reOrient(orientation);
-            
-            config.read();            
+            //root.reOrient(orientation);
+
             if (! config.accessToken) {
                 loginDialog.show()
             } else {

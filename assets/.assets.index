@@ -1,7 +1,8 @@
 1
-6
+7
 main.qml
 o_auth.qml
+ShacButton.qml
 images/door_small_round.png
 images/door_small_round_pinched.png
 images/gate_small_round.png

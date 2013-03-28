@@ -1,5 +1,6 @@
 // Default empty project template
 import bb.cascades 1.0
+import shac.config 1.0
 
 // OAUth URL: https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/userinfo.email&response_type=code&redirect_uri=http://localhost:8080&client_id=231571905235.apps.googleusercontent.com
 
@@ -10,7 +11,17 @@ Page {
         
         layout: StackLayout {
         }
-        
+
+        attachedObjects: [
+            SystemToast {
+                id: toast
+                body: "Toast message"
+            },
+            Configurator {
+                id: config
+            }
+        ]
+            
         ProgressIndicator {
             id: progress
             fromValue: 0
@@ -56,8 +67,19 @@ Page {
                 }
                 onMessageReceived: {
                     console.log("Auth got json data " + message.data)
+                    var json = eval(message.data)
+                    if (json.error) {
+                        toast.body = json.error
+                        toast.show()
+                    } else {
+                        config.accessToken = ''                        
+                    }
                 }
             }
         }
+    }
+
+    onCreationCompleted: {
+        config.read();
     }
 }
