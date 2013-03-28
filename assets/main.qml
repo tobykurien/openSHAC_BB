@@ -8,7 +8,7 @@ NavigationPane {
     // creates one page with a label
     Page {
         titleBar: TitleBar {
-            title: "SHAC"
+            title: "Smart House Access Control"
         }
 
         actions: [
@@ -49,12 +49,16 @@ NavigationPane {
             },
             SystemToast {
                 id: toast
-                body: "Toast message"
             },
             OrientationHandler {
+                id: orientationHandler
                 onOrientationAboutToChange: {
                     root.reOrient(orientation);
                 }
+            },
+            ComponentDefinition {
+                id: appCover
+                source: "AppCover.qml"
             }
         ]
 
@@ -83,19 +87,13 @@ NavigationPane {
             ShacButton {
                 id: btnGate
                 imageName: "gate_small_round"
-                onClicked: {
-                    // make web request to open gate
-                    webRequester.url = "http://enter.house4hack.co.za/init/android/gate"
-                }
+                action: "gate"
             }
             
             ShacButton {
                 id: btnDoor
                 imageName: "door_small_round"
-                onClicked: {
-                    // make web request to open door
-                    webRequester.url = "http://enter.house4hack.co.za/init/android/door"
-                }
+                action: "door"
             }
 
             WebView {
@@ -115,8 +113,9 @@ NavigationPane {
         }
 
         onCreationCompleted: {
+            Application.cover = appCover.createObject();
             OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.All;
-            //root.reOrient(orientation);
+            root.reOrient(orientationHandler.orientation);
 
             if (! config.accessToken) {
                 loginDialog.show()
