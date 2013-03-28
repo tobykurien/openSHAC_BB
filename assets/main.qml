@@ -1,4 +1,4 @@
-// Default empty project template
+// Main screen
 import bb.cascades 1.0
 import bb.system 1.0
 import shac.config 1.0
@@ -41,26 +41,27 @@ NavigationPane {
                 modality: SystemUiModality.Application
                 title: qsTr("Not authenticated")
                 body: qsTr("Would you like to sign in to Google for authentication?")
-                //inputField.inputMode: SystemUiInputMode.Password
                 onFinished: {
                     if (result == SystemUiResult.ConfirmButtonSelection) {
                         root.signIn();
                     }
                 }
             },
+            SystemToast {
+              id: toast
+              body: "Toast message"
+            },
             OrientationHandler {
                 onOrientationAboutToChange: {
-                    if (orientation == UIOrientation.Landscape) {
-                        buttonLayout.orientation = LayoutOrientation.LeftToRight;
-                    } else {
-                        buttonLayout.orientation = LayoutOrientation.TopToBottom;
-                    }
+                    root.reOrient(orientation);
                 }
             }
         ]
 
         Container {
             id: root
+            verticalAlignment: VerticalAlignment.Fill
+            horizontalAlignment: HorizontalAlignment.Fill
 
             layout: StackLayout {
                 id: buttonLayout
@@ -69,6 +70,14 @@ NavigationPane {
             function signIn() {
                 var page = o_auth.createObject();
                 navigationPane.push(page);
+            }
+            
+            function reOrient(orientation) {
+                if (orientation == UIOrientation.Landscape) {
+                    buttonLayout.orientation = LayoutOrientation.LeftToRight;
+                } else {
+                    buttonLayout.orientation = LayoutOrientation.TopToBottom;
+                }
             }
 
             ImageButton {
@@ -81,7 +90,7 @@ NavigationPane {
                 }
                 onClicked: {
                     // make web request to open door
-                    //webRequester.url = "http://enter.house4hack.co.za/init/android/door"
+                    webRequester.url = "http://enter.house4hack.co.za/init/android/door"
                 }
             }
 
@@ -94,8 +103,8 @@ NavigationPane {
                     spaceQuota: 1
                 }
                 onClicked: {
-                    // make web request to open door
-                    //webRequester.url = "http://enter.house4hack.co.za/init/android/door"
+                    // make web request to open gate
+                    webRequester.url = "http://enter.house4hack.co.za/init/android/gate"
                 }
             }
 
@@ -105,12 +114,21 @@ NavigationPane {
                 visible: false
                 verticalAlignment: VerticalAlignment.Bottom
                 horizontalAlignment: HorizontalAlignment.Center
+                onLoadingChanged: {
+                    if (loadRequest.status == WebLoadStatus.Succeeded) {
+                        // done loading, get the JSON
+                        toast.body = webRequester.html
+                        toast.show()
+                    }
+                }
             }
         }
 
         onCreationCompleted: {
             OrientationSupport.supportedDisplayOrientation = SupportedDisplayOrientation.All;
-            config.read();
+            root.reOrient(orientation);
+            
+            config.read();            
             if (! config.accessToken) {
                 loginDialog.show()
             } else {
